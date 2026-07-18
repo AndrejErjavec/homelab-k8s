@@ -8,8 +8,8 @@ locals {
       role        = "control-plane"
       ipv4        = "192.168.10.91/24"
       cores       = 2
-      memory_mb   = 4096
-      disk_gb     = 50
+      memory_mb   = 2048
+      disk_gb     = 20
     }
 
     k8s-worker-01 = {
@@ -18,8 +18,8 @@ locals {
       role        = "worker"
       ipv4        = "192.168.10.92/24"
       cores       = 2
-      memory_mb   = 6144
-      disk_gb     = 60
+      memory_mb   = 2048
+      disk_gb     = 20
     }
 
     k8s-worker-02 = {
@@ -28,8 +28,8 @@ locals {
       role        = "worker"
       ipv4        = "192.168.10.93/24"
       cores       = 2
-      memory_mb   = 6144
-      disk_gb     = 60
+      memory_mb   = 2048
+      disk_gb     = 20
     }
   }
 }

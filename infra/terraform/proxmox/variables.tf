@@ -78,5 +78,5 @@ variable "gateway_ipv4" {
 variable "vm_tags" {
   description = "Tags added to all Kubernetes VMs."
   type        = list(string)
-  default     = ["terraform", "kubernetes", "kubeadm"]
+  default     = ["terraform", "kubernetes"]
 }

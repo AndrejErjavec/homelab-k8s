@@ -60,90 +60,20 @@ resource "proxmox_download_file" "ubuntu_cloud_image" {
   file_name = "jammy-server-cloudimg-amd64.qcow2"
 }
 
-resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
-  name        = "ubuntu-vm"
-  description = "Ubuntu VM cloned from the Terraform-managed template"
-  node_name   = var.proxmox_node_name
-  started     = false
-  tags        = ["terraform", "ubuntu"]
-
-  clone {
-    vm_id = proxmox_virtual_environment_vm.ubuntu_template.vm_id
-    full  = true
-  }
-
-  initialization {
-    datastore_id = var.cloud_init_datastore_id
-
-    user_account {
-      username = var.vm_user
-      keys     = [local.ssh_public_key]
-    }
-  }
-
-  # overrides
-  cpu {
-    cores = 2
-  }
-
-  memory {
-    dedicated = 2048
-  }
-}
-
-
-# resource "proxmox_virtual_environment_vm" "kubernetes" {
-#   for_each = local.kubernetes_vms
-
-#   name        = each.key
-#   description = each.value.description
+# resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
+#   name        = "ubuntu-vm"
+#   description = "Ubuntu VM cloned from the Terraform-managed template"
 #   node_name   = var.proxmox_node_name
-#   vm_id       = each.value.vm_id
-#   tags        = concat(var.vm_tags, [each.value.role])
+#   started     = false
+#   tags        = ["terraform", "ubuntu"]
 
 #   clone {
-#     vm_id = var.template_vm_id
+#     vm_id = proxmox_virtual_environment_vm.ubuntu_template.vm_id
 #     full  = true
-#   }
-
-#   agent {
-#     enabled = true
-#   }
-
-#   stop_on_destroy = true
-
-#   cpu {
-#     cores = each.value.cores
-#     type  = "host"
-#   }
-
-#   memory {
-#     dedicated = each.value.memory_mb
-#     floating  = each.value.memory_mb
-#   }
-
-#   disk {
-#     datastore_id = var.target_datastore_id
-#     interface    = "scsi0"
-#     iothread     = true
-#     discard      = "on"
-#     size         = each.value.disk_gb
 #   }
 
 #   initialization {
 #     datastore_id = var.cloud_init_datastore_id
-
-#     dns {
-#       domain  = var.dns_domain
-#       servers = var.dns_servers
-#     }
-
-#     ip_config {
-#       ipv4 {
-#         address = each.value.ipv4
-#         gateway = var.gateway_ipv4
-#       }
-#     }
 
 #     user_account {
 #       username = var.vm_user
@@ -151,12 +81,83 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 #     }
 #   }
 
-#   network_device {
-#     bridge = var.network_bridge
-#     model  = "virtio"
+#   # overrides
+#   cpu {
+#     cores = 2
 #   }
 
-#   operating_system {
-#     type = "l26"
+#   memory {
+#     dedicated = 2048
 #   }
 # }
+
+
+resource "proxmox_virtual_environment_vm" "kubernetes" {
+  for_each = local.kubernetes_vms
+
+  name        = each.key
+  description = each.value.description
+  node_name   = var.proxmox_node_name
+  vm_id       = each.value.vm_id
+  tags        = concat(var.vm_tags, [each.value.role])
+
+  clone {
+    vm_id = proxmox_virtual_environment_vm.ubuntu_template.vm_id
+    full  = true
+  }
+
+  agent {
+    # read 'Qemu guest agent' section, change to true only when ready
+    enabled = false
+  }
+
+  stop_on_destroy = true
+
+  cpu {
+    cores = each.value.cores
+    type  = "host"
+  }
+
+  memory {
+    dedicated = each.value.memory_mb
+    floating  = each.value.memory_mb
+  }
+
+  disk {
+    datastore_id = var.target_datastore_id
+    interface    = "virtio0"
+    iothread     = true
+    discard      = "on"
+    size         = each.value.disk_gb
+  }
+
+  initialization {
+    datastore_id = var.cloud_init_datastore_id
+
+    dns {
+      domain  = var.dns_domain
+      servers = var.dns_servers
+    }
+
+    ip_config {
+      ipv4 {
+        address = each.value.ipv4
+        gateway = var.gateway_ipv4
+      }
+    }
+
+    user_account {
+      username = var.vm_user
+      keys     = [local.ssh_public_key]
+    }
+  }
+
+  network_device {
+    bridge = var.network_bridge
+    model  = "virtio"
+  }
+
+  # operating_system {
+  #   type = "l26"
+  # }
+}
