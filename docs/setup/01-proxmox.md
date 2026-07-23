@@ -58,7 +58,7 @@ Kubernetes nodes should have stable IP addresses. The control plane endpoint, ku
 This lab reserves:
 
 ```text
-192.168.10.70-192.168.10.79
+192.168.10.90-192.168.10.99
 ```
 
 for Kubernetes nodes and related future addresses.
@@ -78,7 +78,7 @@ home.arpa
 At this stage, the most important DNS name is:
 
 ```text
-k8s-api.home.arpa -> 192.168.10.70
+k8s-api.home.arpa -> 192.168.10.91
 ```
 
 In the first non-HA cluster, this points directly at `k8s-cp-01`. Later, when you rebuild as a highly available control plane, the same name can point to the API virtual IP.
@@ -138,7 +138,7 @@ Planned values are maintained in `docs/ip-plan.md`.
 | DNS server | `192.168.10.12` |
 | Proxmox host | `192.168.10.10` |
 | Proxmox bridge | `vmbr0` |
-| Kubernetes node reservation | `192.168.10.70-192.168.10.79` |
+| Kubernetes node reservation | `192.168.10.90-192.168.10.99` |
 | MetalLB reservation | `192.168.10.200-192.168.10.220` |
 | Local domain | `home.arpa` |
 
@@ -294,7 +294,7 @@ Decide where local DNS records will live. Common choices:
 Create or plan this record:
 
 ```text
-k8s-api.home.arpa -> 192.168.10.70
+k8s-api.home.arpa -> 192.168.10.91
 ```
 
 You may wait to create app records such as `argocd.home.arpa` and `grafana.home.arpa` until ingress or MetalLB exists.
@@ -308,7 +308,7 @@ nslookup k8s-api.home.arpa
 Expected result:
 
 ```text
-192.168.10.70
+192.168.10.91
 ```
 
 If the record does not resolve yet, do not block the Proxmox preparation step. Just document where DNS will be managed and create the record before kubeadm bootstrap.

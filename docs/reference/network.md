@@ -6,7 +6,7 @@ Document stable network values and how traffic flows through the homelab.
 
 ## Current State
 
-The planned LAN is `192.168.10.0/24`, with Kubernetes nodes in `192.168.10.70-192.168.10.79` and MetalLB services in `192.168.10.200-192.168.10.220`.
+The planned LAN is `192.168.10.0/24`, with Kubernetes nodes in `192.168.10.90-192.168.10.99` and MetalLB services in `192.168.10.200-192.168.10.220`.
 
 ## Configuration
 

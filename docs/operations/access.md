@@ -16,7 +16,7 @@ Planned access points:
 | --- | --- |
 | Proxmox | `192.168.10.10` |
 | Kubernetes API | `k8s-api.home.arpa` |
-| Initial control plane | `192.168.10.70` |
+| Initial control plane | `192.168.10.91` |
 
 ## Procedure
 

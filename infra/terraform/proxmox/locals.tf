@@ -7,9 +7,9 @@ locals {
       description = "Kubernetes control-plane node"
       role        = "control-plane"
       ipv4        = "192.168.10.91/24"
-      cores       = 2
-      memory_mb   = 2048
-      disk_gb     = 20
+      cores       = 4
+      memory_mb   = 4096
+      disk_gb     = 30
     }
 
     k8s-worker-01 = {

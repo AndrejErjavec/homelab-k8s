@@ -16,7 +16,7 @@ Initial planned cluster networks:
 | --- | --- |
 | Pod CIDR | `10.244.0.0/16` |
 | Service CIDR | `10.96.0.0/12` |
-| Initial API endpoint | `192.168.10.70` |
+| Initial API endpoint | `192.168.10.91` |
 | Future API VIP | `192.168.10.69` |
 
 ## Procedure

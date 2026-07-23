@@ -184,9 +184,9 @@ IP config:    dhcp placeholder
 Terraform clone-level values:
 
 ```text
-k8s-cp-01      192.168.10.70/24
-k8s-worker-01  192.168.10.71/24
-k8s-worker-02  192.168.10.72/24
+k8s-cp-01      192.168.10.91/24
+k8s-worker-01  192.168.10.92/24
+k8s-worker-02  192.168.10.93/24
 Gateway         192.168.10.1
 DNS             192.168.10.12
 Domain          home.arpa

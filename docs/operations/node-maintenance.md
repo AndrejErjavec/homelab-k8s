@@ -14,9 +14,9 @@ Initial nodes:
 
 | Name | Role | IP |
 | --- | --- | --- |
-| `k8s-cp-01` | control plane | `192.168.10.70` |
-| `k8s-worker-01` | worker | `192.168.10.71` |
-| `k8s-worker-02` | worker | `192.168.10.72` |
+| `k8s-cp-01` | control plane | `192.168.10.91` |
+| `k8s-worker-01` | worker | `192.168.10.92` |
+| `k8s-worker-02` | worker | `192.168.10.93` |
 
 ## Procedure
 

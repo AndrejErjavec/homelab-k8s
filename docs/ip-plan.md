@@ -11,7 +11,7 @@ These are concrete starting values for the first Kubernetes lab build. Verify th
 | DNS server                       | `192.168.10.12`                 |
 | Proxmox host                     | `192.168.10.10`                 |
 | Proxmox bridge                   | `vmbr0`                         |
-| Kubernetes node CIDR reservation | `192.168.10.70-192.168.10.79`   |
+| Kubernetes node CIDR reservation | `192.168.10.90-192.168.10.99`   |
 | MetalLB pool reservation         | `192.168.10.200-192.168.10.220` |
 | Local domain                     | `home.arpa`                     |
 
@@ -19,9 +19,9 @@ These are concrete starting values for the first Kubernetes lab build. Verify th
 
 | Name            | Role          | IP              | FQDN                      |
 | --------------- | ------------- | --------------- | ------------------------- |
-| `k8s-cp-01`     | control plane | `192.168.10.70` | `k8s-cp-01.home.arpa`     |
-| `k8s-worker-01` | worker        | `192.168.10.71` | `k8s-worker-01.home.arpa` |
-| `k8s-worker-02` | worker        | `192.168.10.72` | `k8s-worker-02.home.arpa` |
+| `k8s-cp-01`     | control plane | `192.168.10.91` | `k8s-cp-01.home.arpa`     |
+| `k8s-worker-01` | worker        | `192.168.10.92` | `k8s-worker-01.home.arpa` |
+| `k8s-worker-02` | worker        | `192.168.10.93` | `k8s-worker-02.home.arpa` |
 
 ## Kubernetes Networks
 
@@ -38,7 +38,7 @@ Create these in your router DNS, Pi-hole, AdGuard Home, or local DNS server afte
 
 | Name                     | Target             | Purpose                                   |
 | ------------------------ | ------------------ | ----------------------------------------- |
-| `k8s-api.home.arpa`      | `192.168.10.70`    | Initial single control-plane API endpoint |
+| `k8s-api.home.arpa`      | `192.168.10.91`    | Initial single control-plane API endpoint |
 | `argocd.home.arpa`       | MetalLB/ingress IP | Argo CD                                   |
 | `grafana.home.arpa`      | MetalLB/ingress IP | Grafana                                   |
 | `prometheus.home.arpa`   | MetalLB/ingress IP | Prometheus                                |

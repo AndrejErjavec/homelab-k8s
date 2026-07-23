@@ -1,13 +1,11 @@
-# TODO:
-# You can also configure additional Proxmox users and roles using virtual_environment_user and virtual_environment_role resources of the provider.
-
 resource "proxmox_virtual_environment_vm" "ubuntu_template" {
   name      = "ubuntu-template"
   node_name = var.proxmox_node_name
   vm_id     = var.template_vm_id
 
-  template = true
-  started  = false
+  template        = true
+  on_boot         = true
+  stop_on_destroy = true
 
   machine     = "q35"
   bios        = "ovmf"
@@ -41,8 +39,6 @@ resource "proxmox_virtual_environment_vm" "ubuntu_template" {
         address = "dhcp"
       }
     }
-
-    # user_data_file_id = proxmox_virtual_environment_file.user_data_cloud_config.id
   }
 
   network_device {
@@ -56,40 +52,9 @@ resource "proxmox_download_file" "ubuntu_cloud_image" {
   datastore_id = "local"
   node_name    = var.proxmox_node_name
 
-  url       = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
-  file_name = "jammy-server-cloudimg-amd64.qcow2"
+  url       = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  file_name = "noble-server-cloudimg-amd64.qcow2"
 }
-
-# resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
-#   name        = "ubuntu-vm"
-#   description = "Ubuntu VM cloned from the Terraform-managed template"
-#   node_name   = var.proxmox_node_name
-#   started     = false
-#   tags        = ["terraform", "ubuntu"]
-
-#   clone {
-#     vm_id = proxmox_virtual_environment_vm.ubuntu_template.vm_id
-#     full  = true
-#   }
-
-#   initialization {
-#     datastore_id = var.cloud_init_datastore_id
-
-#     user_account {
-#       username = var.vm_user
-#       keys     = [local.ssh_public_key]
-#     }
-#   }
-
-#   # overrides
-#   cpu {
-#     cores = 2
-#   }
-
-#   memory {
-#     dedicated = 2048
-#   }
-# }
 
 
 resource "proxmox_virtual_environment_vm" "kubernetes" {
@@ -101,6 +66,32 @@ resource "proxmox_virtual_environment_vm" "kubernetes" {
   vm_id       = each.value.vm_id
   tags        = concat(var.vm_tags, [each.value.role])
 
+  started = true
+
+  lifecycle {
+    precondition {
+      condition = length(distinct([
+        for vm in values(local.kubernetes_vms) : vm.vm_id
+      ])) == length(local.kubernetes_vms)
+      error_message = "Every Kubernetes VM must have a unique Proxmox VM ID."
+    }
+
+    precondition {
+      condition = length(distinct([
+        for vm in values(local.kubernetes_vms) : split("/", vm.ipv4)[0]
+      ])) == length(local.kubernetes_vms)
+      error_message = "Every Kubernetes VM must have a unique IPv4 address."
+    }
+
+    precondition {
+      condition = (
+        can(cidrhost(each.value.ipv4, 0)) &&
+        can(regex("^[0-9]{1,3}(\\.[0-9]{1,3}){3}/([0-9]|[12][0-9]|3[0-2])$", each.value.ipv4))
+      )
+      error_message = "${each.key} must have a valid CIDR-formatted IPv4 address."
+    }
+  }
+
   clone {
     vm_id = proxmox_virtual_environment_vm.ubuntu_template.vm_id
     full  = true
@@ -111,7 +102,11 @@ resource "proxmox_virtual_environment_vm" "kubernetes" {
     enabled = false
   }
 
-  stop_on_destroy = true
+  startup {
+    order      = each.value.role == "control-plane" ? "1" : "2"
+    up_delay   = each.value.role == "control-plane" ? "30" : "0"
+    down_delay = "30"
+  }
 
   cpu {
     cores = each.value.cores
